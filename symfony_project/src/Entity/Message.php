@@ -23,8 +23,10 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private $User;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $Chat_Id;
+    #[ORM\ManyToOne(targetEntity: Chat::class, inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $Chat;
+
 
     public function getId(): ?int
     {
@@ -67,14 +69,14 @@ class Message
         return $this;
     }
 
-    public function getChatId(): ?string
+    public function getChat(): ?Chat
     {
-        return $this->Chat_Id;
+        return $this->Chat;
     }
 
-    public function setChatId(string $Chat_Id): self
+    public function setChat(?Chat $Chat): self
     {
-        $this->Chat_Id = $Chat_Id;
+        $this->Chat = $Chat;
 
         return $this;
     }

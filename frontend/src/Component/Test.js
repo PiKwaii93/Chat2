@@ -15,11 +15,11 @@ export default function Test() {
 
     const [user, setUser] = useState([]);
     const [loggedUser, setLoggedUser] = useContext(userContext);
+    const [allMessages, setAllMessages] = useState([]);
     
     const [text, setText] = useState();
 
     const getOneUser = useGetOneUser();
-    const backendPing = useBackendPing();
     const sendMessage = useSendMessage();
     const chatMessage = useGetChatMessage();
 
@@ -49,11 +49,12 @@ export default function Test() {
 
     useEffect(() => {
         getOneUser(params.id).then(data => setUser(data.user));
-        console.log(user);
+        console.log(user)
 
         const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
         const userId = params.id;
-        chatMessage(userId, sendUser).then(data => console.log(data))
+        chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
+        console.log(allMessages)
 
         const url = new URL('http://localhost:9090/.well-known/mercure');
         url.searchParams.append('topic', 'https://example.com/my-private-topic');
@@ -75,6 +76,29 @@ export default function Test() {
                 <input type="text" onChange={toggleChange}/>
                 <button className='btn btn-dark w-100' type='submit'>Send</button>
             </form>
+            <div className="w-75 mx-auto mb-3">
+                {allMessages.map((allMessage) => {
+                    if (allMessage.user_id == "1") {
+                        return (
+                            <div key={allMessage.id} value={allMessage.user_id} className="d-flex justify-content-end messageChatContainer">
+                                <div className='w-50  alert alert-primary d-flex flex-column align-items-end messageChat'>
+                                    <h4>{allMessage.user_id}</h4>
+                                    <p>{allMessage.Content}</p>
+                                </div>
+                            </div>
+                        );
+                    }else{
+                        return(
+                            <div key={allMessage.id} value={allMessage.user_id} className="d-flex messageChatContainer">
+                                <div className='w-50  alert alert-primary d-flex flex-column messageChat'>
+                                    <h4>{allMessage.user_id}</h4>
+                                    <p>{allMessage.Content}</p>
+                                </div>
+                            </div>
+                        );
+                    }
+                })}
+            </div>
         </div>
     )
 }

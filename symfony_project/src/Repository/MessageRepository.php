@@ -23,14 +23,27 @@ class MessageRepository extends ServiceEntityRepository
       * @return Message[] Returns an array of Message objects
       */
     
-    public function findByChatId($chat_id)
+    public function findByChat($chat)
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.chat_id = :chat_id')
-            ->setParameter('chat_id', $chat_id)
-            ->orderBy('m.date', 'DESC')
+            ->andWhere('m.Chat = :Chat')
+            ->setParameter('Chat', $chat)
+            ->orderBy('m.Date', 'DESC')
             ->getQuery()
-            ->getResult()
+            ->getArrayResult()
+        ;
+    }
+    
+    public function findByChatUser($chat, $user)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.Chat = :Chat')
+            ->setParameter('Chat', $chat)
+            ->andWhere('m.User = :User')
+            ->setParameter('User', $user)
+            ->orderBy('m.Date', 'DESC')
+            ->getQuery()
+            ->getArrayResult()
         ;
     }
 

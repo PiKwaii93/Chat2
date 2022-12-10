@@ -32,17 +32,17 @@ class MessageController extends AbstractController
             $newChatRoom->setTopic($chatRoomId);
 
             $chatRoom = $newChatRoom;
+            $manager->persist($chatRoom);
         }
 
         $message = new Message;
         $message->setUser($sendUser);
         $message->setDate(new \DateTime());
-        $message->setChat($chatRoomId);
+        $message->setChat($chatRoom);
         $message->setContent($sendMessage);
 
         $manager = $doctrine->getManager();
         $manager->persist($message);
-        $manager->persist($chatRoom);
         $manager->flush();
 
 
@@ -63,7 +63,7 @@ class MessageController extends AbstractController
         return $this->json([
             'response' => 'Send !',
             'chatroom' => $chatRoom->getTopic(),
-            'chatId' => $chatRoomId
+            'chatId' => $chatRoomId,
         ]);
     }
 
@@ -77,12 +77,28 @@ class MessageController extends AbstractController
 
         $allMessages = $doctrine->getRepository(Message::class)->getAll();
 
-        /* $allMessages = $messageRepository->findBy(array('chat' => $chatRoomId), array('date' => 'DESC')); */
+        $specificMessages = $doctrine->getRepository(Message::class)->findByChat($chatRoom);
+
+        $userMessage = $doctrine->getRepository(Message::class)->findByChatUser($chatRoom, $userId);
+
+        $sendUserMessage = $doctrine->getRepository(Message::class)->findByChatUser($chatRoom, $sendUserId);
+
+
+        for ($i = 0; $i < count($specificMessages); $i++) {
+            for($j = 0; $j < count($userMessage); $j++){
+                if($specificMessages[$i]["id"] == $userMessage[$j]["id"]){
+                    $specificMessages[$i]["user_id"] = $userId->getId();
+                }
+            }
+            for($j = 0; $j < count($sendUserMessage); $j++){
+                if($specificMessages[$i]["id"] == $sendUserMessage[$j]["id"]){
+                    $specificMessages[$i]["user_id"] = $sendUserId->getId();
+                }
+            }
+        }
 
         return $this->json([
-            'chatRoomId' => $chatRoomId,
-            'chatRoom' => $chatRoom,
-            'allMessages' => $allMessages
+            'specificMessages' => $specificMessages
         ], 200, [], ['groups' => 'main']);
     }
 }

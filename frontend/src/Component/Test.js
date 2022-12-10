@@ -33,11 +33,15 @@ export default function Test() {
         const userId = params.id;
         const message = text;
         sendMessage(userId,message,sendUser).then(data => console.log(data))
+        chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
     }
 
     const handleMessage = (e) => {
         const getData = JSON.parse(e.data);
         console.log(getData.message)
+        const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
+        const userId = params.id;
+        chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
 /*         const newMessage = getData.sendMessage
         document.querySelector('h1').insertAdjacentHTML('afterend', '<div class="alert alert-success w-75 mx-auto">' + newMessage + '</div>');
         window.setTimeout(() => {
@@ -60,7 +64,7 @@ export default function Test() {
         url.searchParams.append('topic', 'https://example.com/my-private-topic');
 
         const eventSource = new EventSource(url, {withCredentials: true});
-        eventSource.onmessage = handleMessage;
+        eventSource.onmessage = handleMessage
 
         return () => {
             eventSource.close();

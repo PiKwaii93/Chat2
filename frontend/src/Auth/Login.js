@@ -34,18 +34,20 @@ export default function Login() {
     }
 
     return (
-        <form className='mx-auto mt-5 rounded p-5 bg-light' style={{maxWidth: '500px'}} onSubmit={handleSubmit}>
-            <h1>Please LogIn</h1>
-            <div className="mb-3">
-                <label htmlFor="username" className="form-label">Username</label>
-                <input type="text" className="form-control" id="username" onChange={handleUsername} value={username}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="password" className="form-label">Password</label>
-                <input type="password" className="form-control" id="password" onChange={handlePassword}
-                       value={password}/>
-            </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
+        <div className='w-100 h-100 mx-auto mb-3 position-absolute bg-white'>
+            <form className='mx-auto mt-5 rounded p-5 bg-light' style={{maxWidth: '500px'}} onSubmit={handleSubmit}>
+                <h1>Please LogIn</h1>
+                <div className="mb-3">
+                    <label htmlFor="username" className="form-label">Username</label>
+                    <input type="text" className="form-control" id="username" onChange={handleUsername} value={username}/>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="password" className="form-label">Password</label>
+                    <input type="password" className="form-control" id="password" onChange={handlePassword}
+                        value={password}/>
+                </div>
+                <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+        </div>
     )
 }

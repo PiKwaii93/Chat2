@@ -39,6 +39,8 @@ export default function UserList() {
         console.log(JSON.parse(e.data));
     }
 
+    const wouf = 1
+
     useEffect(() => {
         getUserList().then(data => setUserList(data.users));
 
@@ -49,28 +51,22 @@ export default function UserList() {
         eventSource.onmessage = handleMessage;
 
         return () => {
-            eventSource.close()
+            eventSource.close();
         }
 
-    }, [])
+    }, [wouf])
 
     return (
-        <div>
-            <h1 className='m-5 text-center'>Ping a user</h1>
-            <label>Message</label>
-            <input type="text" onChange={toggleChange}/>
-            {userList.map((user) => (
-                <form className='w-75 mx-auto mb-3' onSubmit={handleSubmit}>
-                    <button className='btn btn-dark w-100' type='submit' value={user.id}>{user.username}</button>
-                </form>
+        <div className='w-25 mx-auto mb-3 overflow-auto'>
+            <h1 className='m-5 text-center'>Choose a user</h1>
+            <div className='w-75 mx-auto mb-3'>
+                {userList.map((user) => (
+                    <li key={user.id}>
+                        <Link to={`/${user.id}`}>{user.username}</Link>
+                    </li>
 
-            ))}
-            {userList.map((user) => (
-                <li key={user.id}>
-                    <Link to={`/${user.id}`}>{user.username}</Link>
-                </li>
-
-            ))}
+                ))}
+            </div>
         </div>
     )
 }

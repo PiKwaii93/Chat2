@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import {useEffect, useState, useContext} from "react";
+import {useEffect, useState, useContext, useRef} from "react";
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
 import useGetUserList from "../Hook/useGetUserList";
 import useBackendPing from "../Hook/useBackendPing";
@@ -23,14 +23,17 @@ export default function Test() {
     const sendMessage = useSendMessage();
     const chatMessage = useGetChatMessage();
 
+    const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
+    const userId = params.id;
+
+    const bottomRef = useRef(null);
+
     const toggleChange = e => {
         setText(e.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
-        const userId = params.id;
         const message = text;
         sendMessage(userId,message,sendUser).then(data => console.log(data))
         chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
@@ -39,8 +42,6 @@ export default function Test() {
     const handleMessage = (e) => {
         const getData = JSON.parse(e.data);
         console.log(getData.message)
-        const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
-        const userId = params.id;
         chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
 /*         const newMessage = getData.sendMessage
         document.querySelector('h1').insertAdjacentHTML('afterend', '<div class="alert alert-success w-75 mx-auto">' + newMessage + '</div>');
@@ -53,12 +54,8 @@ export default function Test() {
 
     useEffect(() => {
         getOneUser(params.id).then(data => setUser(data.user));
-        console.log(user)
 
-        const sendUser = jwt_decode(loggedUser).mercure.payload.userid;
-        const userId = params.id;
         chatMessage(userId, sendUser).then(data => setAllMessages(data.specificMessages));
-        console.log(allMessages)
 
         const url = new URL('http://localhost:9090/.well-known/mercure');
         url.searchParams.append('topic', 'https://example.com/my-private-topic');
@@ -67,22 +64,25 @@ export default function Test() {
         eventSource.onmessage = handleMessage
 
         return () => {
-            eventSource.close();
+            eventSource.close()
         }
-    }, [])
+    }, [params.id])
+
+    useEffect(() => {
+
+        bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+
+    }, [allMessages])
+
+
+    
 
     return (
-        <div>
-            <h1>TEST {params.id}</h1>
-            <h2>{user.username}</h2>
-            <label>Message</label>
-            <form className='w-75 mx-auto mb-3' onSubmit={handleSubmit}>
-                <input type="text" onChange={toggleChange}/>
-                <button className='btn btn-dark w-100' type='submit'>Send</button>
-            </form>
+        <div className='w-75 mx-auto mb-3 overflow-auto'> 
+            <h2 className="position-fixed">{user.username}</h2>
             <div className="w-75 mx-auto mb-3">
                 {allMessages.map((allMessage) => {
-                    if (allMessage.user_id == "1") {
+                    if (allMessage.user_id == sendUser) {
                         return (
                             <div key={allMessage.id} value={allMessage.user_id} className="d-flex justify-content-end messageChatContainer">
                                 <div className='w-50  alert alert-primary d-flex flex-column align-items-end messageChat'>
@@ -103,6 +103,10 @@ export default function Test() {
                     }
                 })}
             </div>
+            <form className='w-75 mx-auto mb-3 d-flex justify-content-end' onSubmit={handleSubmit} ref={bottomRef}>
+                <input className="w-75" type="text" onChange={toggleChange}/>
+                <button className='btn btn-dark w-25' type='submit'>Send</button>
+            </form>
         </div>
     )
 }

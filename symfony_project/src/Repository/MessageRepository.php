@@ -28,7 +28,7 @@ class MessageRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->andWhere('m.Chat = :Chat')
             ->setParameter('Chat', $chat)
-            ->orderBy('m.Date', 'DESC')
+            ->orderBy('m.Date', 'ASC')
             ->getQuery()
             ->getArrayResult()
         ;
@@ -41,7 +41,7 @@ class MessageRepository extends ServiceEntityRepository
             ->setParameter('Chat', $chat)
             ->andWhere('m.User = :User')
             ->setParameter('User', $user)
-            ->orderBy('m.Date', 'DESC')
+            ->orderBy('m.Date', 'ASC')
             ->getQuery()
             ->getArrayResult()
         ;

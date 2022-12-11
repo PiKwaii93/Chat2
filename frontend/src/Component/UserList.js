@@ -60,12 +60,14 @@ export default function UserList() {
         <div className='w-25 mx-auto mb-3 overflow-auto'>
             <h1 className='m-5 text-center'>Choose a user</h1>
             <div className='w-75 mx-auto mb-3'>
-                {userList.map((user) => (
-                    <li key={user.id}>
-                        <Link to={`/${user.id}`}>{user.username}</Link>
-                    </li>
+                <ul>
+                    {userList.map((user) => (
+                        <li key={user.id}>
+                            <Link to={`/${user.id}`}>{user.username}</Link>
+                        </li>
 
-                ))}
+                    ))}
+                </ul>
             </div>
         </div>
     )

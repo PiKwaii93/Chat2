@@ -23,4 +23,12 @@ class UserController extends AbstractController
             'user' => $userRepository->findOneBy(array('id' => $id))
         ], 200, [], ['groups' => 'main']);
     }
+
+    #[Route('/QrCode/{JWT}', name: 'qr_code')]
+    public function QrCode($JWT)
+    {
+        return $this->json([
+            'JWT' => $JWT
+        ], 200, [], ['groups' => 'main']);
+    }
 }

@@ -83,8 +83,16 @@ class MessageController extends AbstractController
 
         $sendUserMessage = $doctrine->getRepository(Message::class)->findByChatUser($chatRoom, $sendUserId);
 
+        $test = [];
 
         for ($i = 0; $i < count($specificMessages); $i++) {
+            /* $pastDate = new \DateTime($specificMessages[$i]["date"]);
+            $newDate = date_format($pastDate,"H:i:s");
+            $specificMessages[$i]["date"] = $newDate; */
+            $pastDate = $specificMessages[$i]["Date"];
+            $newDate = date_format($pastDate,"H:i:s");
+            $specificMessages[$i]["Date"] = $newDate;
+            array_push($test, $newDate);
             for($j = 0; $j < count($userMessage); $j++){
                 if($specificMessages[$i]["id"] == $userMessage[$j]["id"]){
                     $specificMessages[$i]["user_id"] = $userId->getId();
@@ -98,7 +106,8 @@ class MessageController extends AbstractController
         }
 
         return $this->json([
-            'specificMessages' => $specificMessages
+            'specificMessages' => $specificMessages,
+            "test" => $test
         ], 200, [], ['groups' => 'main']);
     }
 }
